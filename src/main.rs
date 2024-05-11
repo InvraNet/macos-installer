@@ -168,5 +168,4 @@ fn main() {
     install_pkg("brew", "lazygit", "");
     install_pkg("brew", "dooit", "");
     install_pkg("brewCask", "kitty", "");
-
 }
