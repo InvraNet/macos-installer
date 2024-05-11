@@ -3,6 +3,13 @@ use std::fs;
 use std::process::{Command, exit};
 use std::path::Path;
 
+#[derive(Debug, serde::Deserialize)]
+struct Package {
+    name: String,
+    installer: String,
+    friendly_name: Option<String>,
+}
+
 fn is_installed(package: &str, installer: &str, _friendly_name: &str) -> bool {
     match installer {
         "xcode-clt" => {
@@ -73,7 +80,7 @@ fn install_pkg(installer: &str, pkg: &str, friendly_name: &str) {
                     }
                 }
                 "xcode-clt" => {
-                    if is_installed("xcode-clt", "xcode-clt", "") {
+                    if !is_installed("xcode-clt", "xcode-clt", "") {
                         println!("\x1B[92m     Installing\x1B[0m Xcode-CLT...");
                         Command::new("sh")
                             .arg("-c")
@@ -141,6 +148,19 @@ fn install_pkg(installer: &str, pkg: &str, friendly_name: &str) {
     }
 }
 
+
+fn parse_package_list(filename: &str) -> Result<(), String> {
+    let content = fs::read_to_string(filename)
+        .map_err(|err| format!("Failed to read {}: {}", filename, err))?;
+    let packages: Vec<Package> = toml::from_str(&content)
+        .map_err(|err| format!("Failed to parse {}: {}", filename, err))?;
+    for package in packages {
+        install_pkg(&package.installer, &package.name, &package.friendly_name.unwrap_or_default());
+    }
+
+    Ok(())
+}
+
 fn main() {
     println!("\x1B[36m===>\x1B[0m Installing dependencies ...");
     install_pkg("fetch", "xcode-clt", "");
@@ -167,4 +187,8 @@ fn main() {
     install_pkg("brew", "lazygit", "");
     install_pkg("brew", "dooit", "");
     install_pkg("brewCask", "kitty", "");
+//    if let Err(err) = parse_package_list("packagelist.toml") {
+//        eprintln!("{}", err);
+//        exit(1);
+//    }
 }
