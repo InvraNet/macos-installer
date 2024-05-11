@@ -5,6 +5,13 @@ use std::path::Path;
 
 fn is_installed(package: &str, installer: &str, _friendly_name: &str) -> bool {
     match installer {
+        "xcode-clt" => {
+            if let Ok(output) = Command::new("xcode-select").arg("-p").output() {
+                return output.status.success();
+            } else {
+                return false;
+            }
+        }           
         "brew" => {
             if package == "nodejs" {
                 return Path::new("/usr/local/Cellar/node").exists();
@@ -66,7 +73,7 @@ fn install_pkg(installer: &str, pkg: &str, friendly_name: &str) {
                     }
                 }
                 "xcode-clt" => {
-                    if is_installed(pkg, "brew", "") {
+                    if is_installed("xcode-clt", "xcode-clt", "") {
                         println!("\x1B[92m     Installing\x1B[0m Xcode-CLT...");
                         Command::new("sh")
                             .arg("-c")
