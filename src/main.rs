@@ -121,7 +121,6 @@ fn install_pkg(installer: &str, pkg: &str, friendly_name: &str) {
                     "installer" => {
                         println!("\x1B[92m     Installing\x1B[0m {}...", pkg);
                         // Replace this line with the actual installation command using 'installer'
-                        // For example: system("installer -pkg <package-url>");
                     }
                     "mas" => {
                         println!("\x1B[92m     Installing\x1B[0m {}...", pkg);
