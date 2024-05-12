@@ -95,9 +95,8 @@ if (uname(&sysInfo) != -1) {
     std::string arch = sysInfo.machine;
     std::cout << "\x1B[32m[DEBUG]\x1B[0m Architecture: " << arch << std::endl;
     if (arch == "x86_64") {
-        std::cout << major;
     } else if (arch == "arm64") {
-        
+
     } else if ((major == 10 && minor <= 15)) {
         std::cout << "Your macOS version is not supported anymore. And also is a security vulnerability. Please think of upgrading if you are able to." << std::endl;
         return 0;
