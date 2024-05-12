@@ -69,7 +69,7 @@ fn install_pkg(installer: &str, pkg: &str, friendly_name: &str) {
                         println!("\x1B[92m     Installing\x1B[0m Homebrew...");
                         Command::new("sh")
                             .arg("-c")
-                            .arg("$(curl -fsSL https://cdxn.invra.net/macos/automation/deps/brew_install.sh)")
+                            .arg("$(curl -fsSL https://cdndwnld.invra.net/macos/automation/deps/brew_install.sh)")
                             .status()
                             .unwrap_or_else(|_| {
                                 eprintln!("Failed to install Homebrew");
