@@ -7,6 +7,7 @@ fi
 
 if ! command -v cargo &> /dev/null; then
   curl https://sh.rustup.rs -sSf | sh
-else
-  cargo build && cargo run
+  exec zsh
 fi
+
+cargo build && cargo run
