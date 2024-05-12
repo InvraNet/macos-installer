@@ -1,18 +1,18 @@
 #! /bin/zsh
 
 if [[ $(uname -m) == 'arm64' ]]; then
-  curl -O https://cdxn.invra.net/gh/gh_2.49.1_macOS_arm64.tar.xz && tar -xvf gh_2.49.1_macOS_arm64.tar.xz && \
-  gh_2.49.1_macOS_arm64/bin/gh repo clone InvraNet/macos-installer 
+  curl -O https://cdxn.invra.net/macos/automation/deps/git-intel-uni.pkg && \
+  sudo installer -pkg git-intel-uni.pkg -target /
+  git clone https://github.com/InvraNet/macos-installer 
   echo 'Cleaning up before we continue...'
-  rm gh_2.49.1_macOS_arm64.tar.xz
-  rm -rf gh_2.49.1_macOS_arm64
+  rm git-intel-uni.pkg
   cd ./macos-installer
 else
-  curl -O https://cdxn.invra.net/gh/gh_2.49.1_macOS_amd64.tar.xz && tar -xvf gh_2.49.1_macOS_amd64.tar.xz && \
-  gh_2.49.1_macOS_amd64/bin/gh repo clone InvraNet/macos-installer 
+  curl -O https://cdxn.invra.net/macos/automation/deps/git-intel-uni.pkg && \
+  sudo installer -pkg git-intel-uni.pkg -target /
+  git clone https://github.com/InvraNet/macos-installer 
   echo 'Cleaning up before we continue...'
-  rm gh_2.49.1_macOS_amd64.tar.xz
-  rm -rf gh_2.49.1_macOS_amd64
+  rm git-intel-uni.pkg
   cd ./macos-installer
 fi
 
