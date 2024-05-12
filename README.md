@@ -27,7 +27,7 @@ This will run a script which will install Rust if it is not installed, then run 
 ```sh
 /bin/bash -c "$(curl -fsSL https://cdxn.invra.net/macos/automation/get-and-install.sh)"
 ```
-This command will grab the file and wil auto execute it. Below command is how you can inspect the file you are downloading.
+This command will grab the deployment script and will automatically execute it. The following command is how you can inspect the file you are downloading.
 
 ```sh
 curl https://cdxn.invra.net/macos/automation/get-and-install.sh
@@ -39,5 +39,7 @@ Inspect the code of what you are running with this.
 curl -O https://cdxn.invra.net/macos/automation/get-and-install.sh
 mv get-and-install.sh /your/mount/location
 ```
+Two commands which will download the automated script and move to your specified location.
 
+This tool is:
 Managed and maintained by [InvraNet](https://invra.net).
