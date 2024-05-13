@@ -1,16 +1,20 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::process::Command; // Import Command for process execution
+use std::process::Command;
+use std::str;
 
 fn get_macos_version() -> Option<String> {
     if let Ok(file) = File::open("/System/Library/CoreServices/SystemVersion.plist") {
         let reader = BufReader::new(file);
 
-        for line in reader.lines() {
-            let line = line.unwrap();
-            if line.contains("<key>ProductVersion</key>") {
-                if let Some(version) = line.strip_prefix("<string>") {
-                    if let Some(version) = version.strip_suffix("</string>") {
+        // Iterate over each line in the file
+        for (index, line) in reader.lines().enumerate() {
+            if let Ok(line) = line {
+                // Look for line 14
+                if index == 13 {
+                    let version_line = line.trim_start(); // Remove leading whitespace
+                    if version_line.starts_with("<string>") && version_line.ends_with("</string>") {
+                        let version = version_line.trim_start_matches("<string>").trim_end_matches("</string>").trim();
                         return Some(version.to_string());
                     }
                 }
@@ -57,6 +61,7 @@ fn get_version_name(major: u32, minor: u32) -> &'static str {
     }
 }
 
+
 fn main() {
     if let Some(mac_os_version) = get_macos_version() {
         let (major, minor, _) = split_version(&mac_os_version);
@@ -64,9 +69,9 @@ fn main() {
         println!("\x1B[32m[DEBUG]\x1B[0m macOS Version: {} ({})", version_name, mac_os_version);
     } else {
         eprintln!("Failed to get the macOS version.");
+        return;
     }
 
-    // Get system architecture using the 'uname' command
     let output = Command::new("uname").arg("-m").output();
     if let Ok(output) = output {
         let arch = String::from_utf8_lossy(&output.stdout).trim().to_string();
@@ -75,12 +80,24 @@ fn main() {
         match arch.as_str() {
             "x86_64" => {
                 println!("\x1B[36m==>\x1B[0m Downloading a temporary git.");
-                Command::new("curl").args(&["-O", "https://cdndwnld.invra.net/macos/automation/deps/git.tar.gz"]).status().unwrap();
-                Command::new("tar").args(&["-xvf", "git.tar.gz"]).status().unwrap();
-                println!("\x1B[36m==>\x1B[0m Compiling git.");
-                Command::new("sh").arg("-c").arg("cd git-2.35.1 && make").status().unwrap();
-                Command::new("sh").arg("-c").arg("cd ../ && mv git-2.35.1 git-temp").status().unwrap();
-                Command::new("sh").arg("-c").arg("git-temp/git clone ").status().unwrap();
+                Command::new("curl").args(&["-O", "https://cdndwnld.invra.net/macos/automation/deps/git-x86_64.tar.gz"]).status().unwrap();
+                Command::new("tar").args(&["-xvf", "git-x86_64.tar.gz"]).status().unwrap();
+
+                let pwd_output = Command::new("pwd").output().expect("Failed to execute command");
+                let pwd_string = String::from_utf8(pwd_output.stdout).expect("Failed to convert to String").trim().to_string();
+                println!("Current working directory: {}", pwd_string);
+
+                let git_clone_status = Command::new("git").args(&["clone", "https://github.com/InvraNet/macos-installer"]).status();
+                if let Err(err) = git_clone_status {
+                    eprintln!("Failed to clone repository: {}", err);
+                    return;
+                }
+
+                let cd_status = Command::new("sh").args(&["-c", &format!("cd {}/macos-installer", pwd_string)]).status();
+                if let Err(err) = cd_status {
+                    eprintln!("Failed to change directory: {}", err);
+                    return;
+                }
             }
             "arm64" => {
                 Command::new("curl").args(&["-O", "https://cdndwnld.invra.net/macos/automation/deps/git.tar.gz"]).status().unwrap();
