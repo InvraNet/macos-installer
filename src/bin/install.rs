@@ -57,7 +57,7 @@ fn get_version_name(major: u32, minor: u32) -> &'static str {
         12 => "Monterey",
         13 => "Ventura",
         14 => "Sonoma",
-        15 => "Sequoia"
+        15 => "Sequoia",
         _ => "Unknown",
     }
 }
